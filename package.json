@@ -1,0 +1,23 @@
+{
+  "name": "newsweather",
+  "version": "0.0.1",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/firoxer/newsweather.git"
+  },
+  "author": "Oliver Vartiainen <oliver@iki.fi>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/firoxer/newsweather/issues"
+  },
+  "homepage": "https://github.com/firoxer/newsweather#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  }
+}

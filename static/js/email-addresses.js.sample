@@ -1,0 +1,10 @@
+const EMAIL_ADDRESSES = [
+  {
+    name: 'Alice',
+    address: 'alice@a.tld',
+  },
+  {
+    name: 'Bob',
+    address: 'bob@b.tld',
+  },
+];

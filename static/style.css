@@ -1,0 +1,98 @@
+body {
+    background: #FDFBF9;
+    color: #080808;
+    font: 24px Barlow;
+    margin: 0;
+}
+
+#newsweather {
+    display: flex;
+    margin: 5vh 10vh;
+}
+
+#hourly-forecasts {
+    flex: 1;
+    flex-grow: 1;
+    /*font-family: */
+}
+
+.hourly-forecast-row {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    margin: 1em 0;
+}
+
+.hourly-forecast-hours {
+    font-size: 200%;
+    text-align: center;
+    width: 1.5em;
+}
+
+.hourly-forecast-weather-symbol {
+    margin-left: .5em;
+    width: 4em;
+}
+
+.hourly-forecast-rest {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.5em;
+    margin-left: 1em;
+}
+
+#headlines {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 2;
+    margin-left: 10vh;
+}
+
+#headlines a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+#headlines p {
+    margin: 0;
+    padding: 1.5em .5em;
+}
+
+#headlines p + p {
+    border-top: 0.1pt solid rgba(0, 0, 0, .2);
+}
+
+#headlines a:hover,
+#headlines a:focus,
+#headlines a:active {
+    text-decoration: underline;
+}
+
+#headline-share {
+    align-items: center;
+    background-color: rgba(0, 0, 0, .4);
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    justify-content: center;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    z-index: 1;
+}
+
+#headline-share button {
+    background-color: #000;
+    border: 0;
+    color: #FFF;
+    font: inherit;
+    font-size: 200%;
+    height: 2em;
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
+#headline-share button + button {
+    margin-left: 1em;
+}
