@@ -19,4 +19,6 @@ Copy the file `.env.sh.sample` to `.env.sh` and fill in the above email addresse
 Development
 ---
 
+Execute `source .env.sh`.
+
 Run `./node_modules/.bin/nodemon -e js,html,css server.js`. Open [http://localhost:3000](http://localhost:3000).
