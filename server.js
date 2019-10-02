@@ -58,10 +58,15 @@ app.post('/email/:address', (req, res) => {
     return;
   }
 
-  const message = req.body.message;
+  const link = req.body.link;
+  const linkTitle = req.body.linkTitle;
 
-  if (!message) {
-    res.status(400).send('Bad/missing message');
+  if (!link) {
+    res.status(400).send('Bad/missing link');
+    return;
+  }
+  if (!linkTitle) {
+    res.status(400).send('Bad/missing link title');
     return;
   }
 
@@ -70,7 +75,7 @@ app.post('/email/:address', (req, res) => {
       --url https://api.sendgrid.com/v3/mail/send \
       --header "Authorization: Bearer ${SENDGRID_API_KEY}" \
       --header 'Content-Type: application/json' \
-      --data '{"personalizations": [{"to": [{"email": "${address}"}]}],"from": {"email": "noreply@oriba.xyz"},"subject": "Your Newsweather link","content": [{"type": "text/plain", "value": "${message}"}]}'
+      --data '{"personalizations": [{"to": [{"email": "${address}"}]}],"from": {"email": "noreply@oriba.xyz"},"subject": "Your Newsweather link","content": [{"type": "text/plain", "value": "${linkTitle}: ${link}"}]}'
   `);
 
   res.sendStatus(201);

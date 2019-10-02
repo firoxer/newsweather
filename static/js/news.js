@@ -23,19 +23,19 @@ function parseHeadlines(headlineData) {
   return headlines.slice(1); // The first line is not important
 }
 
-function shareLink(emailAddress, link) {
+function shareLink(emailAddress, link, linkTitle) {
   fetch(
     `/email/${encodeURIComponent(emailAddress)}`,
     {
       method: 'POST',
-      body: `message=${encodeURIComponent(link)}`,
+      body: `link=${encodeURIComponent(link)}&linkTitle=${encodeURIComponent(linkTitle)}`,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     }
   )
     .then(res => console.log(res));
 }
 
-function showHeadlineShare(link) {
+function showHeadlineShare(link, linkTitle) {
   const shareElem = document.createElement('div');
   shareElem.id = 'headline-share';
   shareElem.onclick = () => document.body.removeChild(shareElem);
@@ -43,7 +43,7 @@ function showHeadlineShare(link) {
   for (const { name, address } of EMAIL_ADDRESSES) { // eslint-disable-line
     const buttonElem = document.createElement('button');
     buttonElem.appendChild(document.createTextNode(name));
-    buttonElem.onclick = () => shareLink(address, link);
+    buttonElem.onclick = () => shareLink(address, link, linkTitle);
     shareElem.appendChild(buttonElem);
   }
 
@@ -63,7 +63,7 @@ function renderHeadlines(headlines) {
 
     const headlineElem = document.createElement('p');
     headlineElem.appendChild(document.createTextNode(decodedText));
-    headlineElem.onclick = () => showHeadlineShare(link);
+    headlineElem.onclick = () => showHeadlineShare(link, decodedText);
     headlinesElem.appendChild(headlineElem);
   }
 }
