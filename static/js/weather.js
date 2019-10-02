@@ -1,3 +1,5 @@
+let isNight = false;
+
 const FORECAST_URL = `/cors/http://data.fmi.fi/fmi-apikey/${FMI_API_KEY}/wfs?request=getFeature&storedquery_id=fmi::forecast::hirlam::surface::point::timevaluepair&geoid=634963&parameters=Temperature,WindSpeedMS,WeatherSymbol3`;
 async function fetchHourlyForecastData() {
   return new Promise((resolve, reject) => {
@@ -42,10 +44,14 @@ function parseHourlyForecastData(hourlyForecastData) {
   const weatherSymbolMatches = findValues(weatherSymbolSection);
 
   // Use temperatures to create the basis for applying other things
+  const dateNow = new Date();
+  const dateTomorrow = new Date();
+  dateTomorrow.setDate(dateTomorrow.getDate() + 1);
   const hourlyForecasts =
     temperatureMatches
       .map(([time]) => ({ time }))
-      .filter(({ time }) => new Date(time) > new Date()); // Drop ones in the past
+      .filter(({ time }) =>
+        new Date(time) >= dateNow && new Date(time) < dateTomorrow); // Drop ones in the past
 
   if (hourlyForecasts.length === 0) {
     console.warn('No future forecasts found');
@@ -82,6 +88,85 @@ function parseHourlyForecastData(hourlyForecastData) {
   });
 
   return hourlyForecasts;
+}
+
+function getBackgroundForWeatherSymbol(weatherSymbol) {
+  const d = vals => `linear-gradient(to bottom right, ${vals})`;
+
+  const lightText = '#F0F0F0';
+  const darkText = '#080808';
+
+  if (isNight) {
+    switch (weatherSymbol) {
+
+    }
+  } else {
+    switch (weatherSymbol) {
+      case 1: // Clear
+        return [
+          d('rgb(216, 242, 255) 0%, rgb(136, 169, 179) 100%'),
+          darkText,
+        ] 
+
+      case 2: // Partly cloudy
+        return [
+          d('rgb(194 209, 217) 0%, rgb(98, 126, 134) 100%'),
+          darkText,
+        ]; 
+
+      case 3: // Cloudy
+        return [
+          d('rgb(172, 172, 172) 0%, rgb(172, 172, 172) 100%'),
+          darkText,
+        ]; 
+
+      case 21: // Partly cloudy; light rain
+      case 22: // Partly cloudy; rain
+      case 22: // Partly cloudy; heavy rain
+      case 31: // Cloudy; light rain
+      case 32: // Cloudy; rain
+      case 33: // Cloudy; heavy rain
+        return [
+        ];
+
+      case 41: // Partly cloudy; light snow
+      case 42: // Partly cloudy; snow
+      case 43: // Partly cloudy; heavy snow
+      case 51: // Cloudy; light snow
+      case 52: // Cloudy; snow
+      case 53: // Cloudy; heavy snow
+        return [
+        ];
+
+      case 61: // Partly cloudy; thunder
+      case 62: // Partly cloudy; heavy thunder
+      case 63: // Cloudy; thunder
+      case 64: // Cloudy; heavy thunder
+        return [
+        ];
+
+      case 71: // Partly cloudy; light sleet
+      case 72: // Partly cloudy; sleet
+      case 73: // Partly cloudy; heavy sleet
+        return [
+        ];
+
+      case 81: // Cloudy; light sleet
+      case 82: // Cloudy; sleet
+      case 83: // Cloudy; heavy sleet
+        return [
+        ];
+
+      case 91: // Fog
+      case 92: // Fog
+        return [
+        ];
+
+      default:
+        console.error(`Unknown weather symbol: ${weatherSymbol}`);
+        return ['#FDFBF9', darkText];
+    }
+  }
 }
 
 function renderHourlyForecasts(hourlyForecasts) {
@@ -122,10 +207,37 @@ function renderHourlyForecasts(hourlyForecasts) {
 
     hourlyForecastsElem.appendChild(rowElem);
   }
+
+  if (hourlyForecasts.length >= 1) {
+    const { weatherSymbol } = hourlyForecasts[0];
+    const [backgroundColor, textColor] =
+      getBackgroundForWeatherSymbol(weatherSymbol);
+    document.body.style.background = backgroundColor;
+    document.body.style.color = textColor;
+    document.body.style.backgroundAttachment = 'fixed'; // Has to be explicit
+  }
 }
 
 async function refreshWeather() {
   const hourlyForecastData = await fetchHourlyForecastData();
   const hourlyForecasts = parseHourlyForecastData(hourlyForecastData);
   renderHourlyForecasts(hourlyForecasts);
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((position) => {
+      if (!position || !position.coords || !position.coords.latitude || !position.coords.longitude) {
+        console.error('Location could not be got');
+        return;
+      }
+
+      const dateNow = new Date();
+
+      const timezoneOffset = dateNow.getTimezoneOffset() * (-1) / 60;
+      const { sunrise: sunriseHours, sunset: sunsetHours } =
+        sunrise(position.coords.latitude, position.coords.longitude, timezoneOffset);
+
+      const currentHour = dateNow.getHours() + (dateNow.getMinutes() / 60); // Close enough
+      isNight = currentHour < sunriseHours || currentHour > sunsetHours;
+    });
+  }
 }

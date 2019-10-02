@@ -1,5 +1,6 @@
 body {
-    background: #FDFBF9;
+    background-color: #FDFBF9;
+    background-attachment: fixed;
     color: #080808;
     font: 24px Barlow;
     margin: 0;
