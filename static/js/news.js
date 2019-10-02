@@ -1,3 +1,5 @@
+const HEADLINES_TO_SHOW = 24;
+
 const NEWS_URL = "/cors/https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_UUTISET.rss";
 async function fetchHeadlineData() {
   return new Promise((resolve, reject) => {
@@ -20,7 +22,7 @@ function parseHeadlines(headlineData) {
     headlines.push({ text: match[1], link: match[2] });
   }
 
-  return headlines.slice(1); // The first line is not important
+  return headlines.slice(1, HEADLINES_TO_SHOW + 1); // The first line is not important
 }
 
 function shareLink(emailAddress, link, linkTitle) {
