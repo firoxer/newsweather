@@ -2,7 +2,7 @@ function init() {
   refreshNews();
   refreshWeather();
 
-  const refreshInterval = 30 * 60 * 60 * 1000; // Half an hour
+  const refreshInterval = 30 * 60 * 1000; // Half an hour
   setInterval(refreshNews, refreshInterval);
   setInterval(refreshWeather, refreshInterval);
 }
