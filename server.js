@@ -78,6 +78,8 @@ app.post('/email/:address', (req, res) => {
       --data '{"personalizations": [{"to": [{"email": "${address}"}]}],"from": {"email": "noreply@oriba.xyz"},"subject": "Your Newsweather link","content": [{"type": "text/plain", "value": "${linkTitle}: ${link}"}]}'
   `);
 
+  console.debug(`Sent an email to ${address} about the headline "${linkTitle}"`);
+
   res.sendStatus(201);
 });
 
