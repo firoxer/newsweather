@@ -91,81 +91,68 @@ function parseHourlyForecastData(hourlyForecastData) {
 }
 
 function getBackgroundForWeatherSymbol(weatherSymbol) {
-  const d = vals => `linear-gradient(to bottom right, ${vals})`;
+  const b = (filename) => `url("backgrounds/${filename}.jpg")`;
 
   const lightText = '#F0F0F0';
   const darkText = '#080808';
 
   if (isNight) {
-    switch (weatherSymbol) {
+    return [b('night'), lightText]
+  }
 
-    }
-  } else {
-    switch (weatherSymbol) {
-      case 1: // Clear
-        return [
-          d('rgb(216, 242, 255) 0%, rgb(136, 169, 179) 100%'),
-          darkText,
-        ] 
+  weatherSymbol = Math.floor(Math.random() * 100);
 
-      case 2: // Partly cloudy
-        return [
-          d('rgb(194 209, 217) 0%, rgb(98, 126, 134) 100%'),
-          darkText,
-        ]; 
+  switch (weatherSymbol) {
+    default:
+      console.error(`Unknown weather symbol: ${weatherSymbol}`);
+      // Intentional fallthrough
 
-      case 3: // Cloudy
-        return [
-          d('rgb(172, 172, 172) 0%, rgb(172, 172, 172) 100%'),
-          darkText,
-        ]; 
+    case 1: // Clear
+      return [b('day-clear'), darkText];
 
-      case 21: // Partly cloudy; light rain
-      case 22: // Partly cloudy; rain
-      case 22: // Partly cloudy; heavy rain
-      case 31: // Cloudy; light rain
-      case 32: // Cloudy; rain
-      case 33: // Cloudy; heavy rain
-        return [
-        ];
+    case 2: // Partly cloudy
+      return [b('day-partly-cloudy'), darkText];
 
-      case 41: // Partly cloudy; light snow
-      case 42: // Partly cloudy; snow
-      case 43: // Partly cloudy; heavy snow
-      case 51: // Cloudy; light snow
-      case 52: // Cloudy; snow
-      case 53: // Cloudy; heavy snow
-        return [
-        ];
+    case 3: // Cloudy
+      return [b('day-cloudy'), darkText];
 
-      case 61: // Partly cloudy; thunder
-      case 62: // Partly cloudy; heavy thunder
-      case 63: // Cloudy; thunder
-      case 64: // Cloudy; heavy thunder
-        return [
-        ];
+    case 21: // Partly cloudy; light rain
+    case 22: // Partly cloudy; rain
+    case 31: // Cloudy; light rain
+    case 32: // Cloudy; rain
+      return [b('day-rain'), darkText];
 
-      case 71: // Partly cloudy; light sleet
-      case 72: // Partly cloudy; sleet
-      case 73: // Partly cloudy; heavy sleet
-        return [
-        ];
+    case 22: // Partly cloudy; heavy rain
+    case 33: // Cloudy; heavy rain
+      return [b('day-heavy-rain'), darkText];
 
-      case 81: // Cloudy; light sleet
-      case 82: // Cloudy; sleet
-      case 83: // Cloudy; heavy sleet
-        return [
-        ];
+    case 41: // Partly cloudy; light snow
+    case 42: // Partly cloudy; snow
+    case 51: // Cloudy; light snow
+    case 52: // Cloudy; snow
+      return [b('day-snow'), darkText];
 
-      case 91: // Fog
-      case 92: // Fog
-        return [
-        ];
+    case 43: // Partly cloudy; heavy snow
+    case 53: // Cloudy; heavy snow
+      return [b('day-heavy-snow'), darkText];
 
-      default:
-        console.error(`Unknown weather symbol: ${weatherSymbol}`);
-        return ['#FDFBF9', darkText];
-    }
+    case 61: // Partly cloudy; thunder
+    case 62: // Partly cloudy; heavy thunder
+    case 63: // Cloudy; thunder
+    case 64: // Cloudy; heavy thunder
+      return [b('day-thunder'), darkText];
+
+    case 71: // Partly cloudy; light sleet
+    case 72: // Partly cloudy; sleet
+    case 73: // Partly cloudy; heavy sleet
+    case 81: // Cloudy; light sleet
+    case 82: // Cloudy; sleet
+    case 83: // Cloudy; heavy sleet
+      return [b('day-sleet'), darkText];
+
+    case 91: // Fog
+    case 92: // Fog
+      return [b('day-fog'), darkText];
   }
 }
 
@@ -210,18 +197,17 @@ function renderHourlyForecasts(hourlyForecasts) {
 
   if (hourlyForecasts.length >= 1) {
     const { weatherSymbol } = hourlyForecasts[0];
-    const [backgroundColor, textColor] =
+    const [background, textColor] =
       getBackgroundForWeatherSymbol(weatherSymbol);
-    document.body.style.background = backgroundColor;
+    document.body.style.background = background;
     document.body.style.color = textColor;
+    document.body.style.backgroundSize = 'cover'; // Has to be explicit
     document.body.style.backgroundAttachment = 'fixed'; // Has to be explicit
   }
 }
 
 async function refreshWeather() {
-  const hourlyForecastData = await fetchHourlyForecastData();
-  const hourlyForecasts = parseHourlyForecastData(hourlyForecastData);
-  renderHourlyForecasts(hourlyForecasts);
+  const hourlyForecastDataPromise = fetchHourlyForecastData();
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -239,5 +225,9 @@ async function refreshWeather() {
       const currentHour = dateNow.getHours() + (dateNow.getMinutes() / 60); // Close enough
       isNight = currentHour < sunriseHours || currentHour > sunsetHours;
     });
+
+    const hourlyForecastData = await hourlyForecastDataPromise;
+    const hourlyForecasts = parseHourlyForecastData(hourlyForecastData);
+    renderHourlyForecasts(hourlyForecasts);
   }
 }
