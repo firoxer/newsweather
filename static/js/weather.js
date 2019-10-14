@@ -120,7 +120,7 @@ function getBackgroundForWeatherSymbol(weatherSymbol) {
     case 32: // Cloudy; rain
       return [b('day-rain'), darkText];
 
-    case 22: // Partly cloudy; heavy rain
+    case 23: // Partly cloudy; heavy rain
     case 33: // Cloudy; heavy rain
       return [b('day-heavy-rain'), darkText];
 
