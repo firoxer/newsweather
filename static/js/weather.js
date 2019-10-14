@@ -100,8 +100,6 @@ function getBackgroundForWeatherSymbol(weatherSymbol) {
     return [b('night'), lightText]
   }
 
-  weatherSymbol = Math.floor(Math.random() * 100);
-
   switch (weatherSymbol) {
     default:
       console.error(`Unknown weather symbol: ${weatherSymbol}`);
