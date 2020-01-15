@@ -1,6 +1,6 @@
 let isNight = false;
 
-const FORECAST_URL = `/cors/http://data.fmi.fi/fmi-apikey/${FMI_API_KEY}/wfs?request=getFeature&storedquery_id=fmi::forecast::hirlam::surface::point::timevaluepair&geoid=634963&parameters=Temperature,WindSpeedMS,WeatherSymbol3`;
+const FORECAST_URL = `/cors/http://opendata.fmi.fi/wfs?request=getFeature&storedquery_id=fmi::forecast::hirlam::surface::point::timevaluepair&geoid=634963&parameters=Temperature,WindSpeedMS,WeatherSymbol3`;
 async function fetchHourlyForecastData() {
   return new Promise((resolve, reject) => {
     fetch(FORECAST_URL)
